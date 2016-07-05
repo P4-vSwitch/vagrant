@@ -7,6 +7,14 @@ $script = <<SCRIPT
     sudo apt-get -y install git python-pip fuse libfuse-dev dh-autoreconf openssl libssl-dev cmake
 SCRIPT
 
+$switch_script = <<SWITCH_SCRIPT
+    /vagrant/setup-switch.sh
+SWITCH_SCRIPT
+
+$moongen_script = <<MOONGEN_SCRIPT
+    /vagrant/setup-moongen.sh
+MOONGEN_SCRIPT
+
 Vagrant.configure("2") do |config|
 
     # Configure switch, i.e., device under test (DUT)
@@ -24,6 +32,9 @@ Vagrant.configure("2") do |config|
             virtualbox.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
             virtualbox.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
         end
+
+        # Setup switch
+        switch.vm.provision "shell", inline: $switch_script
     end
 
     # Configure generator
@@ -37,6 +48,9 @@ Vagrant.configure("2") do |config|
             virtualbox.memory = "2048"
             virtualbox.cpus = "2"
         end
+
+        # Setup generator
+        generator.vm.provision "shell", inline: $moongen_script
     end
 
     # Configure receiver
@@ -50,6 +64,9 @@ Vagrant.configure("2") do |config|
             virtualbox.memory = "2048"
             virtualbox.cpus = "2"
         end
+
+        # Setup receiver
+        receiver.vm.provision "shell", inline: $moongen_script
     end
 
     # Install essentials
