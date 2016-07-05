@@ -28,6 +28,8 @@ sudo insmod $RTE_SDK/$RTE_TARGET/kmod/rte_kni.ko "lo_mode=lo_mode_ring"
 # Add eth1 and eth2 interfaces to DPDK
 sudo ifconfig eth1 down
 sudo $RTE_SDK/tools/dpdk_nic_bind.py -b igb_uio eth1
+sudo ifconfig eth2 down
+sudo $RTE_SDK/tools/dpdk_nic_bind.py -b igb_uio eth2
 
 # To view these interfaces run the following command:
 # $RTE_SDK/tools/dpdk_nic_bind.py --status
@@ -36,7 +38,7 @@ sudo $RTE_SDK/tools/dpdk_nic_bind.py -b igb_uio eth1
 cd /home/vagrant
 sudo mkdir -p /mnt/huge
 (mount | grep hugetlbfs) > /dev/null || sudo mount -t hugetlbfs nodev /mnt/huge
-echo 1024 > /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
+echo 512 > /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
 
 # Note: you can verify if huge pages are configured properly using the following command:
 # grep -i huge /proc/meminfo

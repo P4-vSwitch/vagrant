@@ -11,9 +11,9 @@ $switch_script = <<SWITCH_SCRIPT
     /vagrant/setup-switch.sh
 SWITCH_SCRIPT
 
-$moongen_script = <<MOONGEN_SCRIPT
-    /vagrant/setup-moongen.sh
-MOONGEN_SCRIPT
+# $moongen_script = <<MOONGEN_SCRIPT
+#     /vagrant/setup-moongen.sh
+# MOONGEN_SCRIPT
 
 $pktgen_script = <<PKTGEN_SCRIPT
     /vagrant/setup-pktgen.sh
@@ -45,12 +45,16 @@ Vagrant.configure("2") do |config|
     config.vm.define "generator" do |generator|
         generator.vm.box = "ubuntu-trusty64"
 
-        generator.vm.network "private_network", ip: "172.16.0.10", netmask: "255.255.255.0", virtualbox__intnet: "gen-sw"
+        generator.vm.network "private_network", ip: "172.16.0.12", netmask: "255.255.255.0", virtualbox__intnet: "gen-sw"
+        generator.vm.network "private_network", ip: "172.16.0.13", netmask: "255.255.255.0", virtualbox__intnet: "gen-rcv"
 
         generator.vm.provider "virtualbox" do |virtualbox|
             # Customize the amount of memory on the VM:
-            virtualbox.memory = "4096"
-            virtualbox.cpus = "4"
+            virtualbox.memory = "2048"
+            virtualbox.cpus = "2"
+            # Enable promiscuous mode
+            virtualbox.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+            virtualbox.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
         end
 
         # Setup generator
@@ -61,12 +65,16 @@ Vagrant.configure("2") do |config|
     config.vm.define "receiver" do |receiver|
         receiver.vm.box = "ubuntu-trusty64"
 
-        receiver.vm.network "private_network", ip: "172.16.0.11", netmask: "255.255.255.0", virtualbox__intnet: "sw-rcv"
+        receiver.vm.network "private_network", ip: "172.16.0.14", netmask: "255.255.255.0", virtualbox__intnet: "sw-rcv"
+        receiver.vm.network "private_network", ip: "172.16.0.15", netmask: "255.255.255.0", virtualbox__intnet: "gen-rcv"
 
         receiver.vm.provider "virtualbox" do |virtualbox|
             # Customize the amount of memory on the VM:
-            virtualbox.memory = "4096"
-            virtualbox.cpus = "4"
+            virtualbox.memory = "2048"
+            virtualbox.cpus = "2"
+            # Enable promiscuous mode
+            virtualbox.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+            virtualbox.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
         end
 
         # Setup receiver
