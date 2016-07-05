@@ -1,24 +1,17 @@
 #!/usr/bin/env bash
 
-# Clone MoonGen
+# Clone Pktgen
 cd /home/vagrant
-git clone https://github.com/P4-vSwitch/MoonGen.git
-cd MoonGen/
-git checkout dpdk2.1
+git clone https://github.com/P4-vSwitch/pktgen.git
+cd pktgen/
 git submodule update --init
 
-# Build LuaJIT
-cd /home/vagrant/MoonGen/deps/luajit
-make -j 2 'CFLAGS=-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_LUA52COMPAT'
-make install DESTDIR=$(pwd)
-
 # Build DPDK
-cd /home/vagrant/MoonGen/deps/dpdk
-patch -p1 -N < ../../setup-scripts/patches/dpdk-config.patch
+cd /home/vagrant/pktgen/deps/dpdk
 make -j 2 install T=x86_64-native-linuxapp-gcc
 
 # Setup DPDK-specific environment variables
-export RTE_SDK=/home/vagrant/MoonGen/deps/dpdk
+export RTE_SDK=/home/vagrant/pktgen/deps/dpdk
 export RTE_TARGET=x86_64-native-linuxapp-gcc
 export DPDK_DIR=$RTE_SDK
 export DPDK_BUILD=$DPDK_DIR/$RTE_TARGET/
@@ -48,7 +41,6 @@ echo 1024 > /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepag
 # Note: you can verify if huge pages are configured properly using the following command:
 # grep -i huge /proc/meminfo
 
-# Build MoonGen
-cd /home/vagrant/MoonGen/build
-cmake ..
+# Build Pktgen
+cd /home/vagrant/pktgen
 make

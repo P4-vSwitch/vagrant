@@ -4,7 +4,7 @@
 $script = <<SCRIPT
     sudo apt-get update
     sudo apt-get upgrade
-    sudo apt-get -y install git python-pip fuse libfuse-dev dh-autoreconf openssl libssl-dev cmake
+    sudo apt-get -y install git python-pip fuse libfuse-dev dh-autoreconf openssl libssl-dev cmake libpcap-dev
 SCRIPT
 
 $switch_script = <<SWITCH_SCRIPT
@@ -14,6 +14,10 @@ SWITCH_SCRIPT
 $moongen_script = <<MOONGEN_SCRIPT
     /vagrant/setup-moongen.sh
 MOONGEN_SCRIPT
+
+$pktgen_script = <<PKTGEN_SCRIPT
+    /vagrant/setup-pktgen.sh
+PKTGEN_SCRIPT
 
 Vagrant.configure("2") do |config|
 
@@ -45,12 +49,12 @@ Vagrant.configure("2") do |config|
 
         generator.vm.provider "virtualbox" do |virtualbox|
             # Customize the amount of memory on the VM:
-            virtualbox.memory = "2048"
-            virtualbox.cpus = "2"
+            virtualbox.memory = "4096"
+            virtualbox.cpus = "4"
         end
 
         # Setup generator
-        generator.vm.provision "shell", inline: $moongen_script
+        generator.vm.provision "shell", inline: $pktgen_script
     end
 
     # Configure receiver
@@ -61,12 +65,12 @@ Vagrant.configure("2") do |config|
 
         receiver.vm.provider "virtualbox" do |virtualbox|
             # Customize the amount of memory on the VM:
-            virtualbox.memory = "2048"
-            virtualbox.cpus = "2"
+            virtualbox.memory = "4096"
+            virtualbox.cpus = "4"
         end
 
         # Setup receiver
-        receiver.vm.provision "shell", inline: $moongen_script
+        receiver.vm.provision "shell", inline: $pktgen_script
     end
 
     # Install essentials

@@ -47,7 +47,7 @@ sudo ifconfig eth2 down
 sudo $RTE_SDK/tools/dpdk_nic_bind.py -b igb_uio eth2
 
 # To view these interfaces run the following command:
-# ./$RTE_SDK/tools/dpdk_nic_bind.py --status
+# $RTE_SDK/tools/dpdk_nic_bind.py --status
 
 # Configure Huge Pages
 cd /home/vagrant
