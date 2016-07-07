@@ -138,7 +138,7 @@ $ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0
 Similarly, in another terminal log into the receiver VM.
 
 ```bash
-$ vagrant ssh generator
+$ vagrant ssh receiver
 ```
 
 Run `pktgen` as follows:
