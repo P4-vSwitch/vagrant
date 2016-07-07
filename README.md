@@ -135,12 +135,18 @@ Run `pktgen` as follows:
 $ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/l2_switch/generator.pkt
 ```
 
-Similarly, in another terminal log into the receiver VM and run `pktgen` as follows:
+Similarly, in another terminal log into the receiver VM.
 
- ```bash
- $ cd ~/pktgen
- $ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/l2_switch/receiver.pkt
- ```
+```bash
+$ vagrant ssh generator
+```
+
+Run `pktgen` as follows:
+ 
+```bash
+$ cd ~/pktgen
+$ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/l2_switch/receiver.pkt
+```
 
 Now, go back to the `pktgen` interface, running on the generator VM, and start sending traffic.
 
