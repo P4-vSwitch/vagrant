@@ -198,7 +198,7 @@ Use the following commands on the generator VM.
  $ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/simple_router/generator.pkt
  ```
 
-And, the following on the receiver VM.
+And the following on the receiver VM.
 
 ```bash
  $ cd ~/pktgen
