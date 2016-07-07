@@ -5,10 +5,10 @@ some example P4 programs.
 
 ### Setup Virtual Machines (VMs)
 
-There are three virtual machines: (1) Switch, (2) Generator, and (3) Receiver. The Generator
+There are three virtual machines: Switch, Generator, and Receiver. The Generator
 sends traffic to the switch on its `eth1` interface, the switch then processes the packet
 based on the configured P4 program and sends it out to the receiver on its `eth2` interface.
-The receiver receives the traffic and displays the stats on the screen.
+The receiver receives the traffic and displays stats on the screen.
 
 Clone the `vagrant` repository.
 
@@ -50,7 +50,7 @@ $ export DPDK_DIR=$RTE_SDK
 $ export DPDK_BUILD=$DPDK_DIR/$RTE_TARGET/
 ```
 
-Compile the `l2_switch.p4` program. Specify **`/vagrant/examples/l2_switch/l2_switch.p4`** for the `p4inputfile` flag.
+Compile the `l2_switch.p4` program. Specify `/vagrant/examples/l2_switch/l2_switch.p4` for the `p4inputfile` flag.
 
 ```bash
 $ sudo ./configure --with-dpdk=$DPDK_BUILD CFLAGS="-g -O2 -Wno-cast-align" \
@@ -83,10 +83,11 @@ $ sudo ./ovs-vswitchd --dpdk -c 0x1 -n 4 -- unix:/usr/local/var/run/openvswitch/
 
 ###### Create an OVS bridge
 
-In the third terminal, run the following commands to create a new OVS bridge.
+Open a third terminal and run the following commands to create a new OVS bridge.
 
 ```bash
 $ cd ~/ovs/utilities
+$ sudo ./ovs-vsctl --no-wait init
 $ sudo ./ovs-vsctl add-br br0 -- set bridge br0 datapath_type=netdev
 $ sudo ./ovs-vsctl set bridge br0 protocols=OpenFlow15
 $ sudo ./ovs-vsctl add-port br0 dpdk0 -- set Interface dpdk0 type=dpdk
@@ -146,7 +147,7 @@ Now, go back to the `pktgen` interface running on the generator VM and start sen
 $ start 0
 ```
 
-On the receiver side, you will start seeing stats for packet RX counts on the `pktgen` interface.
+On the receiver side, you will start seeing stats (e.g., packet RX counts) on the `pktgen` interface.
 
 > You can also verify if the switch is forwarding traffic by dumping flows on the switch VM.
 > Open a new terminal and log into the switch VM.
