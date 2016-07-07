@@ -1,22 +1,23 @@
 ## PISCES Test Environment
 
-Following provides instructions on how to setup virtual machines along with some example P4 programs.
+Following provides instructions on how to setup virtual machines for the PISCES test environment along with
+some example P4 programs.
 
 ### Setup Virtual Machines (VMs)
 
 There are three virtual machines: (1) Switch, (2) Generator, and (3) Receiver. The Generator
-sends traffic to the switch on switch's `eth1` interface, the switch then processes the packet
+sends traffic to the switch on its `eth1` interface, the switch then processes the packet
 based on the configured P4 program and sends it out to the receiver on its `eth2` interface.
 The receiver receives the traffic and displays the stats on the screen.
 
-Clone the `vagrant` repository that we have created for this setup.
+Clone the `vagrant` repository.
 
 ```bash
 $ git clone https://github.com/P4-vSwitch/vagrant.git
 $ cd vagrant
 ```
 
-And start virtual machines.
+Bring up virtual machines.
 
 ```bash
 $ vagrant up
@@ -26,5 +27,174 @@ $ vagrant up
 
 ## Examples
 
-#### 1. A Layer-2 Switch
+#### 1. Simple Layer-2 Switch
 
+We show how to build a simple layer-2 switch using PISCES. We use the
+[`l2_switch.p4`](https://github.com/p4lang/p4factory/tree/master/targets/l2_switch) program provided with the
+[p4lang/p4factory](https://github.com/p4lang/p4factory) repository.
+
+Log into the switch VM.
+
+```bash
+$ vagrant ssh switch
+```
+
+##### a. Compiling `l2_switch.p4`
+
+First, make sure that DPDK environment variables are populated.
+
+```bash
+$ export RTE_SDK=/home/vagrant/ovs/deps/dpdk
+$ export RTE_TARGET=x86_64-native-linuxapp-gcc
+$ export DPDK_DIR=$RTE_SDK
+$ export DPDK_BUILD=$DPDK_DIR/$RTE_TARGET/
+```
+
+Compile the `l2_switch.p4` program. Specify **`/vagrant/examples/l2_switch/l2_switch.p4`** for the `p4inputfile` flag.
+
+```bash
+$ sudo ./configure --with-dpdk=$DPDK_BUILD CFLAGS="-g -O2 -Wno-cast-align" \
+                   p4inputfile=/vagrant/examples/l2_switch/l2_switch.p4 \
+                   p4outputdir=./include/p4/src
+$ sudo make clean
+$ sudo make -j 2
+```
+
+##### b. Running `l2_switch.p4`
+
+###### Run `ovsdb-server`
+
+Open a new terminal and run `ovsdb-server`.
+
+```bash
+$ cd ~/ovs/ovsdb
+$ sudo ./ovsdb-server --remote=punix:/usr/local/var/run/openvswitch/db.sock \
+                      --remote=db:Open_vSwitch,Open_vSwitch,manager_options --pidfile
+```
+
+###### Run `ovs-vswitchd`
+
+In another terminal run `ovs-vswitchd`.
+
+```bash
+$ cd ~/ovs/vswitchd
+$ sudo ./ovs-vswitchd --dpdk -c 0x1 -n 4 -- unix:/usr/local/var/run/openvswitch/db.sock --pidfile
+```
+
+###### Create an OVS bridge
+
+In the third terminal, run the following commands to create a new OVS bridge.
+
+```bash
+$ cd ~/ovs/utilities
+$ sudo ./ovs-vsctl add-br br0 -- set bridge br0 datapath_type=netdev
+$ sudo ./ovs-vsctl set bridge br0 protocols=OpenFlow15
+$ sudo ./ovs-vsctl add-port br0 dpdk0 -- set Interface dpdk0 type=dpdk
+$ sudo ./ovs-vsctl add-port br0 dpdk1 -- set Interface dpdk1 type=dpdk
+```
+
+> Note: <br>
+> This needs to be done only once. These changes persist across reboots.
+>
+> Also, to delete the bridge run:
+> ```bash
+> $ sudo ./ovs-vsctl del-br br0
+> ```
+>
+> And to display bridge settings run:
+> ```bash
+> $ sudo ./ovs-vsctl show
+> ```
+
+###### Install flow rules
+
+```bash
+$ cd /vagrant/examples/l2_switch/
+$ sudo ./l2_switch.sh
+```
+
+###### Send and receive test traffic
+
+Open a new terminal and log into the generator VM.
+
+```bash
+$ vagrant ssh generator
+```
+
+Go to the `pktgen` directory.
+
+```bash
+$ cd ~/pktgen
+```
+
+Run `pktgen` as follows:
+
+```bash
+$ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/l2_switch/generator.pkt
+```
+
+Similarly, in another terminal log into the receiver VM and run `pktgen` as follows:
+
+ ```bash
+ $ cd ~/pktgen
+ $ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/l2_switch/receiver.pkt
+ ```
+
+Now, go back to the `pktgen` interface running on the generator VM and start sending traffic.
+
+```bash
+$ start 0
+```
+
+On the receiver side, you will start seeing stats for packet RX counts on the `pktgen` interface.
+
+> You can also verify if the switch is forwarding traffic by dumping flows on the switch VM.
+> Open a new terminal and log into the switch VM.
+> ```bash
+> $ vagrant ssh switch
+> ```
+>
+> Now run the following commands:
+> ```
+> $ cd ~/ovs/utilities
+> $ sudo ./ovs-ofctl --protocols=OpenFlow15 dump-flows br0
+> ```
+
+You should see non-zero byte and packet counts in the dumped flow rules.
+
+#### 2. Simple Router
+
+To build a simple router, follow the same steps as above with following changes.
+
+###### a. P4 program:
+
+`/vagrant/examples/simple_router/simple_router.p4`
+
+> When compiling the switch, make sure to run `sudo make clean` before running `sudo make -2`.
+
+###### b. Flow rules:
+
+`/vagrant/examples/simple_router/simple_router.sh`
+
+###### c. Send and test traffic
+
+Use the following commands on the generator VM.
+
+```bash
+ $ cd ~/pktgen
+ $ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/simple_router/generator.pkt
+ ```
+
+And, the following on the receiver VM.
+
+```bash
+ $ cd ~/pktgen
+ $ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/simple_router/receiver.pkt
+ ```
+
+---
+
+Enjoy!
+
+For more information visit: <br>
+**[psices.cs.princeotn.edu](psices.cs.princeotn.edu)**
