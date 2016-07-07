@@ -53,6 +53,7 @@ $ export DPDK_BUILD=$DPDK_DIR/$RTE_TARGET/
 Compile the `l2_switch.p4` program. Specify `/vagrant/examples/l2_switch/l2_switch.p4` for the `p4inputfile` flag.
 
 ```bash
+$ cd ~/ovs
 $ sudo ./configure --with-dpdk=$DPDK_BUILD CFLAGS="-g -O2 -Wno-cast-align" \
                    p4inputfile=/vagrant/examples/l2_switch/l2_switch.p4 \
                    p4outputdir=./include/p4/src
@@ -202,5 +203,5 @@ And, the following on the receiver VM.
 
 Enjoy!
 
-For more information visit: <br>
+For more information please visit: <br>
 [pisces.cs.princeton.edu](http://pisces.cs.princeton.edu)
