@@ -197,4 +197,4 @@ And, the following on the receiver VM.
 Enjoy!
 
 For more information visit: <br>
-[pisces.cs.princeton.edu/](http://pisces.cs.princeton.edu/)
+[pisces.cs.princeton.edu](http://pisces.cs.princeton.edu)
