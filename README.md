@@ -1,6 +1,6 @@
-## PISCES Test Environment
+## PISCES Simulation Environment
 
-Following provides instructions on how to setup virtual machines for the PISCES test environment along with
+Following provides instructions on how to setup virtual machines for the PISCES simulation environment along with
 some example P4 programs.
 
 ### Setup Virtual Machines (VMs)
