@@ -141,11 +141,16 @@ Similarly, in another terminal log into the receiver VM and run `pktgen` as foll
  $ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/l2_switch/receiver.pkt
  ```
 
-Now, go back to the `pktgen` interface running on the generator VM and start sending traffic.
+Now, go back to the `pktgen` interface, running on the generator VM, and start sending traffic.
 
 ```bash
 $ start 0
 ```
+
+> To stop sending traffic, type:
+> ```bash
+> $ stop 0
+> ```
 
 On the receiver side, you will start seeing stats (e.g., packet RX counts) on the `pktgen` interface.
 
