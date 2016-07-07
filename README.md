@@ -148,7 +148,7 @@ $ cd ~/pktgen
 $ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/l2_switch/receiver.pkt
 ```
 
-Now, go back to the `pktgen` interface, running on the generator VM, and start sending traffic.
+Now go back to the `pktgen` interface, running on the generator VM, and start sending traffic.
 
 ```bash
 $ start 0
