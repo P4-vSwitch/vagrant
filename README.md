@@ -183,7 +183,7 @@ To build a simple router, follow the same steps as above with following changes.
 
 `/vagrant/examples/simple_router/simple_router.p4`
 
-> When compiling the switch, make sure to run `sudo make clean` before running `sudo make -2`.
+> When compiling the switch, make sure to run `sudo make clean` before running `sudo make -j 2`.
 
 ###### b. Flow rules:
 
