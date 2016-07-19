@@ -23,7 +23,10 @@ Bring up virtual machines.
 $ vagrant up
 ```
 
-> Note: it can take vagrant 10-15 mins to start up the VMs. So sit back, relax, and wait for the setup to complete. :-)
+> Note: <br>
+> It can take vagrant 10-15 mins to start up the VMs. So sit back, relax, and wait for the setup to complete. :-)
+>
+> Also, the VMs being setup are only compatible with VirtualBox, make sure this provider is available to vagrant.
 
 ## Examples
 
@@ -41,7 +44,7 @@ $ vagrant ssh switch
 
 ##### a. Compiling `l2_switch.p4`
 
-First, make sure that DPDK environment variables are populated.
+First, make sure that DPDK environment variables are populated in the switch VM.
 
 ```bash
 $ export RTE_SDK=/home/vagrant/ovs/deps/dpdk
@@ -65,7 +68,7 @@ $ sudo make -j 2
 
 ###### Run `ovsdb-server`
 
-Open a new terminal and run `ovsdb-server`.
+Open a new terminal, log into the switch VM and run `ovsdb-server`.
 
 ```bash
 $ cd ~/ovs/ovsdb
@@ -75,7 +78,7 @@ $ sudo ./ovsdb-server --remote=punix:/usr/local/var/run/openvswitch/db.sock \
 
 ###### Run `ovs-vswitchd`
 
-In another terminal run `ovs-vswitchd`.
+In another terminal, log into the switch VM and run `ovs-vswitchd`.
 
 ```bash
 $ cd ~/ovs/vswitchd
@@ -84,7 +87,7 @@ $ sudo ./ovs-vswitchd --dpdk -c 0x1 -n 4 -- unix:/usr/local/var/run/openvswitch/
 
 ###### Create an OVS bridge
 
-Open a third terminal and run the following commands to create a new OVS bridge.
+Open a third terminal, log into the switch VM and run the following commands to create a new OVS bridge.
 
 ```bash
 $ cd ~/ovs/utilities
@@ -142,7 +145,7 @@ $ vagrant ssh receiver
 ```
 
 Run `pktgen` as follows:
- 
+
 ```bash
 $ cd ~/pktgen
 $ sudo ./app/app/x86_64-native-linuxapp-gcc/app/pktgen -c 0x3 -n 4 -- -P -m "1.0" -f /vagrant/examples/l2_switch/receiver.pkt
