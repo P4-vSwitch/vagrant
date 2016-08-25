@@ -4,7 +4,7 @@
 $script = <<SCRIPT
     sudo apt-get update
     sudo apt-get upgrade
-    sudo apt-get -y install git python-pip fuse libfuse-dev dh-autoreconf openssl libssl-dev cmake libpcap-dev
+    sudo apt-get -y install git python-pip fuse libfuse-dev dh-autoreconf openssl libssl-dev cmake libpcap-dev python-yaml
 SCRIPT
 
 $switch_script = <<SWITCH_SCRIPT
