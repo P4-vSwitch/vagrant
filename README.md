@@ -10,6 +10,12 @@ sends traffic to the switch on its `eth1` interface, the switch then processes t
 based on the configured P4 program and sends it out to the receiver on its `eth2` interface.
 The receiver receives the traffic and displays stats on the screen.
 
+Add the `vagrant` box.
+
+```bash
+$ vagrant box add pisces-ubuntu-trusty64 http://www.cs.princeton.edu/~mshahbaz/projects/pisces/vagrant/ubuntu-trusty64.box
+```
+
 Clone the `vagrant` repository.
 
 ```bash
