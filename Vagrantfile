@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
 
     # Configure switch, i.e., device under test (DUT)
     config.vm.define "switch" do |switch|
-        switch.vm.box = "http://www.cs.princeton.edu/~mshahbaz/projects/pisces/vagrant/ubuntu-trusty64.box"
+        switch.vm.box = "pisces-ubuntu-trusty64"
 
         switch.vm.network "private_network", ip: "172.16.0.10", netmask: "255.255.255.0", virtualbox__intnet: "gen-sw"
         switch.vm.network "private_network", ip: "172.16.0.11", netmask: "255.255.255.0", virtualbox__intnet: "sw-rcv"
@@ -43,7 +43,7 @@ Vagrant.configure("2") do |config|
 
     # Configure generator
     config.vm.define "generator" do |generator|
-        generator.vm.box = "http://www.cs.princeton.edu/~mshahbaz/projects/pisces/vagrant/ubuntu-trusty64.box"
+        generator.vm.box = "pisces-ubuntu-trusty64"
 
         generator.vm.network "private_network", ip: "172.16.0.12", netmask: "255.255.255.0", mac: "08002715b411", virtualbox__intnet: "gen-sw"
         generator.vm.network "private_network", ip: "172.16.0.13", netmask: "255.255.255.0", virtualbox__intnet: "gen-rcv"
@@ -63,7 +63,7 @@ Vagrant.configure("2") do |config|
 
     # Configure receiver
     config.vm.define "receiver" do |receiver|
-        receiver.vm.box = "http://www.cs.princeton.edu/~mshahbaz/projects/pisces/vagrant/ubuntu-trusty64.box"
+        receiver.vm.box = "pisces-ubuntu-trusty64"
 
         receiver.vm.network "private_network", ip: "172.16.0.14", netmask: "255.255.255.0", mac: "0800277e0b95", virtualbox__intnet: "sw-rcv"
         receiver.vm.network "private_network", ip: "172.16.0.15", netmask: "255.255.255.0", virtualbox__intnet: "gen-rcv"
