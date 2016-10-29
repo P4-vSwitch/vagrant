@@ -27,6 +27,7 @@ Vagrant.configure("2") do |config|
 
         switch.vm.network "private_network", ip: "172.16.0.10", netmask: "255.255.255.0", virtualbox__intnet: "gen-sw"
         switch.vm.network "private_network", ip: "172.16.0.11", netmask: "255.255.255.0", virtualbox__intnet: "sw-rcv"
+        switch.vm.network "private_network", ip: "192.168.50.4"
 
         switch.vm.provider "virtualbox" do |virtualbox|
             # Customize the amount of memory on the VM:
