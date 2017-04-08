@@ -29,8 +29,7 @@ Bring up virtual machines.
 $ vagrant up
 ```
 
-> Note: <br>
-> Make sure that you have enough memory on the host to run the setup (switch ~ 4G, generator/receiver ~ 2G each). 
+> Note: Make sure that you have enough memory on the host to run the setup (switch ~ 4G, generator/receiver ~ 2G each). 
 > Also, VMs are only compatible with VirtualBox, so please make sure this provider is available to vagrant.
 >
 > It can take vagrant 10-15 mins to start up the VMs. So sit back, relax, and wait for the setup to complete. :-)
